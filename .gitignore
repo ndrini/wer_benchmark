@@ -1,0 +1,22 @@
+
+
+# data files
+data
+
+
+# python
+
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.py[cod]
+*$py.class
+
+# virtual environment
+.venv
+
+
+# results
+results
+
