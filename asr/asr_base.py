@@ -1,9 +1,8 @@
-import time
 from abc import ABC, abstractmethod
 
 # from dataclasses import dataclass
 from dataclasses import dataclass, field
-from typing import Dict, Optional
+from typing import Optional
 
 
 @dataclass
@@ -11,7 +10,7 @@ class TranscriptionResult:
     service: str
     transcription: str
     transcription_itn: Optional[str] = None
-    confidence: Optional[float] = None  # Azure a volte fornisce confidenza, Whisper no
+    confidence: Optional[float] = None
     processing_time: float = 0.0
     error: bool = False
     wer: Optional[float] = None
@@ -19,8 +18,10 @@ class TranscriptionResult:
 
 @dataclass
 class Transcription:
-    audio: bytes  # binary file i.e. wav audio file
-    audio_mp3: Optional[bytes] = None  # mp3 audio file
+    # audio: bytes  # binary file i.e. wav audio file
+    # audio_mp3: Optional[bytes] = None  # mp3 audio file
+    audio_wav_path: str  # binary file i.e. wav audio file
+    audio_mp3_path: Optional[str] = None  # mp3 audio file
     duration: Optional[float] = None
     transcription_ground_truth: str = ""
     transcription_ground_truth_itn: Optional[str] = None
