@@ -17,6 +17,9 @@ __pycache__/
 .venv
 
 
+# secrets
+.env
+
 # results
 results
 
