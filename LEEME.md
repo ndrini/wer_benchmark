@@ -3,11 +3,21 @@
 Este documento proporciona instrucciones para la instalación y configuración del entorno de desarrollo para el proyecto **web_benchmark**. Asegúrate de seguir cada paso cuidadosamente.
 
 
+## Ejecución
+
+Ejecuta con venv activado: 
+
+```bash
+python -m main
+```
+
+Lee en el termina los resultados, ve el gráfico en la carpeta `results` (ordenados por fecha).
+
 ## TODO
 
 - he definido el output esperado y las funciones que necesito para calcularlo (dibujarlo)
-- ahora: esbribir la carga de datos para el dataset
-- escribir las intervifies hacia los modelos
+- ahora: escribir la carga de datos para el dataset
+- escribir las interfaces hacia los modelos
 - 
 
 

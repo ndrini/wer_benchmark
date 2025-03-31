@@ -98,7 +98,7 @@ def compute_mean_processing_time_for_each_service(dataset: list[Transcription]) 
 #     mean_wers = compute_mean_wer_for_each_service(dataset)
 
 
-def plot_results_for_each_service(mean_wers: dict, mean_process_time: dict):
+def plot_and_store_results_for_each_service(mean_wers: dict, mean_process_time: dict):
     """normalize and plot the mean WER and mean processing time for each service"""
     # normalize the mean WER and mean processing time
     # plot the mean WER and mean processing time for each service
