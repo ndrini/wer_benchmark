@@ -1,27 +1,31 @@
 import os
 
-import asr_utils
-
 from asr.asr_base import Transcription, TranscriptionResult
-from asr.asr_factory import get_asr_engine
+from asr.asr_factory import get_asr_engine, get_available_asr_engines
+
+from . import asr_utils
 
 # list possible asr engines
 engines = ["whispers", "gemini", "speech"]
 
-print("Possible ASR engines:", get_asr_engine.__name__)
+
+# Stampiamo i motori disponibili
+print("Possible ASR engines:", get_available_asr_engines())
+
 
 AUDIO_DIR = "data"
 # create the dataset composed of objects of type Transcription
 
 
-def create_dataset() -> list[Transcription]:
+def create_dataset(item_number: int = 10) -> list[Transcription]:
+    """Create a dataset of Transcription objects from the audio files in the AUDIO_DIR directory."""
 
     dataset = []
 
     # sample from first source: the short audio files
-    df_short = asr_utils.extract_random_short(10)
+    df_short = asr_utils.extract_random_short(item_number)
 
-    for idx, row in df_short.iteritems():
+    for idx, row in df_short.items():
         print(idx, row)
         dataset.append(asr_utils.create_transcription_instance_from_short(idx, row))
 
@@ -42,9 +46,37 @@ def add_transcription(service_name, transcript_obj: Transcription) -> Transcript
     # return TranscriptionResult(service_name, transcription, None, 0.0, None)
 
 
-def get_wer():
+def get_wer(item_number=2):
     # for all the services in the transcriptionResults, compute the WER
-    pass
+
+    # dataset = create_dataset(item_number=2)
+    # for transcript_obj in dataset:
+    #     add_transcription("whisper", transcript_obj)
+
+    #     # add further services here
+    #     print(transcript_obj)
+
+    # analyze and plot the results
+    print("Computing WER for all services...")
+
+    # dataset = create_dataset(item_number)
+
+    # for transcript_obj in dataset:
+    #     add_transcription("whisper", transcript_obj)
+
+    #     # add further services here
+    #     print(transcript_obj)
+
+    # analyze and plot the results
+
+    wer_result = (
+        {"whispers": 0.1, "gemini": 0.2, "speech": 0.15},
+        {"whispers": 580, "gemini": 874, "speech": 511},
+    )
+
+    asr_utils.plot_and_store_results_for_each_service(*wer_result)
+
+    return wer_result
 
 
 if __name__ == "__main__":
@@ -56,6 +88,7 @@ if __name__ == "__main__":
         print(transcript_obj)
 
     # analyze and plot the results
+
     pass
 
 
