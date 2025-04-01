@@ -8,7 +8,7 @@
         }
     },
     
-    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.typeCheckingMode": "standard",
 
 
     "[markdown]": {
@@ -25,6 +25,7 @@
         "Alessandrini",
         "astream",
         "authtoken",
+        "azurelang",
         "BUILDTAG",
         "caplog",
         "Cocoro",
@@ -58,7 +59,10 @@
         "websocket",
         "websockets",
         "wers",
-        "westeurope"
+        "westeurope",
+        "xlabel",
+        "xticks",
+        "ylabel"
     ],
     "cSpell.enabled": true, 
 	"cSpell.language": "es,en", 

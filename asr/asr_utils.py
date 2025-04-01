@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Hashable
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -80,7 +80,7 @@ def extract_random_long(files_number: int) -> pd.DataFrame:
 
 def create_transcription_instance_from_short(
     # idx: int, row: pd.Series[Any]
-    idx: int,
+    idx: Hashable,
     row: pd.Series,
 ) -> Transcription:
     audio_file_path = os.path.join(root_path, "data", "ds_short", row["file"])
@@ -101,8 +101,8 @@ def compute_wer(reference: str, hypothesis: str):
 
 def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict[str, float]:
     """
-    Computa il WER medio per ciascun servizio.
-    Gestisce i casi in cui trans_result.wer è None.
+    Computes the average WER for each service.
+    Handles cases where trans_result.wer is None.
     """
     mean_wers: dict[str, list[float]] = {}
     for transcription in dataset:
@@ -118,43 +118,6 @@ def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict[str,
             result_mean_wers[service] = sum(wers) / len(wers)
 
     return result_mean_wers
-
-
-# def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict[str, float]:
-#     # compute the mean wer for each service
-#     mean_wers = {}
-#     for transcription in dataset:
-#         # for each service
-#         for trans_result in transcription.transcriptionResults:
-#             # Ensure the service key exists and is a list
-#             mean_wers.setdefault(trans_result.service, []).append(trans_result.wer)
-
-
-#     """ prevent possible missing of wer values in the transcriptionResults list
-#         to avoid *************** mean_wers [None, 1.5, 1.1428571428571428]
-# Traceback (most recent call last):
-#   File "<frozen runpy>", line 198, in _run_module_as_main
-#   File "<frozen runpy>", line 88, in _run_code
-#   File "/home/lillo/workspace/b_ins/wer_benchmark/main.py", line 31, in <module>
-#     wer_result = compute_asr_benchmark.get_wer(item_number)
-#                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#   File "/home/lillo/workspace/b_ins/wer_benchmark/asr/compute_asr_benchmark.py", line 72, in get_wer
-#     asr_utils.compute_mean_wer_for_each_service(dataset),
-#     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#   File "/home/lillo/workspace/b_ins/wer_benchmark/asr/asr_utils.py", line 110, in compute_mean_wer_for_each_service
-#     mean_wers[service] = sum(mean_wers[service]) / len(mean_wers[service])
-#                          ^^^^^^^^^^^^^^^^^^^^^^^
-# TypeError: unsupported operand type(s) for +: 'int' and 'NoneType'
-
-#     """
-
-#     # Compute the mean WER for each service
-#     for service in mean_wers:
-#         print("*************** mean_wers", mean_wers[service])
-#         mean_wers[service] = sum(mean_wers[service]) / len(mean_wers[service])
-
-
-#     return mean_wers
 
 
 def compute_mean_processing_time_for_each_service(
@@ -181,18 +144,11 @@ def compute_mean_processing_time_for_each_service(
     return mean_process_time
 
 
-# def display_mean_wer_for_each_service(dataset: list[Transcription]):
-#     """plot the mean WER for each service"""
-#     mean_wers = compute_mean_wer_for_each_service(dataset)
-
-
 def plot_and_store_results_for_each_service(
     mean_wers: dict[str, float], mean_process_time: dict[str, float]
 ):
     """normalize and plot the mean WER and mean processing time for each service"""
-    # normalize the mean WER and mean processing time
-    # plot the mean WER and mean processing time for each service
-    # Create the plot
+    # Normalize the values
     max_process_time = max(mean_process_time.values())
     max_wer = max(mean_wers.values())
     # Normalize the values
@@ -206,10 +162,10 @@ def plot_and_store_results_for_each_service(
         "Processing Time": normalized_process_time,
     }
 
-    # Creiamo un DataFrame
+    # create un DataFrame
     df = pd.DataFrame(data)
 
-    # Creiamo il grafico a barre
+    # create il grafico a barre
     df.plot(kind="bar", figsize=(10, 6))
 
     # Aggiungiamo etichette
@@ -268,50 +224,7 @@ def plot_mean_wer_for_each_service(mean_wers: dict[str, float]):
     print(f"Figure saved to {filepath}")
 
 
-# def run_asr(files_number):
-
-#     # select 30 short traces and 6 long traces
-#     df_short = extract_random(files_number)
-
-#     df_results = pandas.DataFrame(
-#         columns=[
-#             "idx",
-#             "transcript_asr",
-#             "transcript_ground_truth",
-#             "time_spent_transcribing",
-#         ]
-#     )
-#     # use tqdm to run in parallel the speach recognition, return also the speed of the process
-#     for idx, row in df_short.iterrows():
-#         audio_file_path = os.path.join(root_path, "data", "ds_short", row["file"])
-#         extracted_text = recognize_speech_from_wav(audio_file_path)
-
-#         # add wer columns to the df_results
-#         df_results["idx"] = df_short["idx"]
-#         df_short.at[idx, "transcript_asr"] = extracted_text
-#         df_results["time_spent_transcribing"] = (
-#             0.0  # TODO add time spent transcribing here
-#         )
-#         df_results["transcript_ground_truth"] = df_short["transcript_itn"]
-#         print("**********", row["transcript_ground_truth"], extracted_text)
-
-#     # compute wer
-#     df_results["wer"] = df_results.apply(
-#         lambda row: compute_wer(row["transcript_ground_truth"], row["transcript_asr"]),
-#         axis=1,
-#     )
-
-#     # print wer
-#     print(df_results.head())
-
-#     return df_results
-
-
-#     pass
-
 if __name__ == "__main__":
-    # extract_random(2)
-    # plot_mean_wer_for_each_service({"whispers": 0.1, "gemini": 0.2, "speech": 0.15})
 
     plot_and_store_results_for_each_service(
         {"whispers": 0.1, "gemini": 0.2, "speech": 0.15},
