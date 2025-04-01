@@ -25,8 +25,7 @@ def create_dataset(item_number: int = 10) -> list[Transcription]:
     # sample from first source: the short audio files
     df_short = asr_utils.extract_random_short(item_number)
 
-    for idx, row in df_short.items():
-        print(idx, row)
+    for idx, row in df_short.iterrows():
         dataset.append(asr_utils.create_transcription_instance_from_short(idx, row))
 
     # # sample from second source: the long audio files
@@ -38,40 +37,39 @@ def create_dataset(item_number: int = 10) -> list[Transcription]:
     return dataset
 
 
-def add_transcription(service_name, transcript_obj: Transcription) -> Transcription:
+def add_transcription(
+    service_name: str, transcript_obj: Transcription
+) -> Transcription:
     """ "populate the transcriptionResults list of the Transcription object with the transcription obtained from the ASR engine"""
 
     asr = get_asr_engine(service_name)
-    transcript_obj.transcriptionResults.append(asr.transcribe(transcript_obj.audio))
+    transcript_obj.transcriptionResults.append(asr.transcribe(transcript_obj))
     # return TranscriptionResult(service_name, transcription, None, 0.0, None)
 
 
-def get_wer(item_number=2):
+def get_wer(item_number: int = 2):
     # for all the services in the transcriptionResults, compute the WER
 
-    # dataset = create_dataset(item_number=2)
-    # for transcript_obj in dataset:
-    #     add_transcription("whisper", transcript_obj)
-
-    #     # add further services here
-    #     print(transcript_obj)
-
-    # analyze and plot the results
     print("Computing WER for all services...")
 
-    # dataset = create_dataset(item_number)
+    dataset = create_dataset(item_number)
 
-    # for transcript_obj in dataset:
-    #     add_transcription("whisper", transcript_obj)
+    for transcript_obj in dataset:
+        add_transcription("azure", transcript_obj)
 
     #     # add further services here
     #     print(transcript_obj)
 
     # analyze and plot the results
 
+    # wer_result = (
+    #     {"whispers": 0.1, "gemini": 0.2, "speech": 0.15},
+    #     {"whispers": 580, "gemini": 874, "speech": 511},
+    # )
+
     wer_result = (
-        {"whispers": 0.1, "gemini": 0.2, "speech": 0.15},
-        {"whispers": 580, "gemini": 874, "speech": 511},
+        asr_utils.compute_mean_wer_for_each_service(dataset),
+        asr_utils.compute_mean_processing_time_for_each_service(dataset),
     )
 
     asr_utils.plot_and_store_results_for_each_service(*wer_result)
@@ -80,12 +78,12 @@ def get_wer(item_number=2):
 
 
 if __name__ == "__main__":
-    dataset = create_dataset()
-    for transcript_obj in dataset:
-        add_transcription("whisper", transcript_obj)
+    # dataset = create_dataset()
+    # for transcript_obj in dataset:
+    #     add_transcription("azure", transcript_obj)
 
-        # add further services here
-        print(transcript_obj)
+    #     # add further services here
+    #     print(transcript_obj)
 
     # analyze and plot the results
 

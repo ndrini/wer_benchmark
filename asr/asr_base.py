@@ -20,8 +20,8 @@ class TranscriptionResult:
 class Transcription:
     # audio: bytes  # binary file i.e. wav audio file
     # audio_mp3: Optional[bytes] = None  # mp3 audio file
-    audio_wav_path: str  # binary file i.e. wav audio file
-    audio_mp3_path: Optional[str] = None  # mp3 audio file
+    audio_wav_path: str
+    audio_mp3_path: Optional[str] = None  # mp3 audio file path
     duration: Optional[float] = None
     transcription_ground_truth: str = ""
     transcription_ground_truth_itn: Optional[str] = None
@@ -33,6 +33,6 @@ class AsrBase(ABC):
     """Interfaz base para sistemas ASR."""
 
     @abstractmethod
-    def transcribe(self, audio_path: str) -> TranscriptionResult:
+    def transcribe(self, transcript_obj: Transcription) -> TranscriptionResult:
         """Transcribe un archivo de audio y devuelve un objeto TranscriptionResult."""
         pass

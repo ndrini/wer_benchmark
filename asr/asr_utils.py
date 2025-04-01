@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -19,45 +20,73 @@ from .asr_base import Transcription, TranscriptionResult
 # from main import root_path
 
 
-def extract_random_short(files_number) -> pd.DataFrame:
+def extract_random_short(files_number: int) -> pd.DataFrame:
+    """extract a random sample of files from the short audio files samples"""
 
     # import in a dataframe the data/ds_short_transcript.txt txt file, fields separated by | pipe
-    transcript = pd.read_csv(
-        os.path.join(root_path, "data", "ds_short_transcript.txt"), sep="\\|"
+    # transcript = pd.read_csv(
+    #     os.path.join(root_path, "data", "ds_short_transcript.txt"), sep="\\|"
+    # )
+
+    df_transcript = pd.read_csv(
+        os.path.join(root_path, "data", "ds_short_transcript.csv")
     )
 
     # create a new dataframe with only the file name and transcript columns
-    df_short_all = transcript[["file", "transcript_itn"]]
-    print(df_short_all.head())
+    # df_short_all = transcript[["file", "transcript_itn"]]
+
+    # give types to the columns
+    df_transcript["file"] = df_transcript["file"].astype(str)
+    df_transcript["transcript_itn"] = df_transcript["transcript_itn"].astype(str)
+    df_transcript["transcript"] = df_transcript["transcript"].astype(str)
+    df_transcript["duration"] = df_transcript["duration"].astype(float)
+
+    print(
+        "*** during extract_random_short function, \n\t\t\ttranscript.head():",
+        df_transcript.head(),
+    )
 
     # randomly sample from the dataframe
-    df_short = df_short_all.sample(n=files_number)
+    df_short = df_transcript.sample(n=files_number)
 
-    print(df_short.head())
+    df_short["file"] = df_short["file"].astype(str)
+    df_short["transcript_itn"] = df_short["transcript_itn"].astype(str)
+    df_short["transcript"] = df_short["transcript"].astype(str)
+    df_short["duration"] = df_short["duration"].astype(float)
+
+    print(
+        "*** during extract_random_short function, , \n\t\t\tdf_short.head():",
+        df_short.head(),
+    )
     return df_short
 
 
-def extract_random_long(files_number) -> pd.DataFrame:
-    pass
+def extract_random_long(files_number: int) -> pd.DataFrame:
+    return pd.DataFrame()
 
 
-def create_transcription_instance_from_short(idx, row: pd.Series):
+def create_transcription_instance_from_short(
+    # idx: int, row: pd.Series[Any]
+    idx: int,
+    row: pd.Series,
+) -> Transcription:
     audio_file_path = os.path.join(root_path, "data", "ds_short", row["file"])
 
     return Transcription(
-        audio=open(audio_file_path, "rb").read(),
+        # audio_wav_path=open(audio_file_path, "rb").read(),
+        audio_wav_path=audio_file_path,
         transcription_ground_truth=row["transcript"],
         transcription_ground_truth_itn=row["transcript_itn"],
         duration=row["duration"],
     )
 
 
-def compute_wer(reference, hypothesis):
+def compute_wer(reference: str, hypothesis: str):
 
     return wer(reference, hypothesis)
 
 
-def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict:
+def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict[str, float]:
     # compute the mean wer for each service
     mean_wers = {}
     for transcription in dataset:
@@ -68,6 +97,7 @@ def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict:
 
     # Compute the mean WER for each service
     for service in mean_wers:
+        print("*************** mean_wers", mean_wers[service])
         mean_wers[service] = sum(mean_wers[service]) / len(mean_wers[service])
 
     return mean_wers
@@ -81,11 +111,13 @@ def compute_mean_processing_time_for_each_service(dataset: list[Transcription]) 
         for trans_result in transcription.transcriptionResults:
             # Ensure the service key exists and is a list
             mean_process_time.setdefault(trans_result.service, []).append(
-                trans_result.wer
+                trans_result.processing_time
             )
 
     # Compute the mean WER for each service
     for service in mean_process_time:
+
+        print("*************** mean_process_time", mean_process_time[service])
         mean_process_time[service] = sum(mean_process_time[service]) / len(
             mean_process_time[service]
         )
@@ -223,7 +255,7 @@ if __name__ == "__main__":
     # extract_random(2)
     # plot_mean_wer_for_each_service({"whispers": 0.1, "gemini": 0.2, "speech": 0.15})
 
-    plot_results_for_each_service(
+    plot_and_store_results_for_each_service(
         {"whispers": 0.1, "gemini": 0.2, "speech": 0.15},
         {"whispers": 580, "gemini": 874, "speech": 511},
     )
