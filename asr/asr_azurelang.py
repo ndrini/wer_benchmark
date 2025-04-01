@@ -50,10 +50,10 @@ class AsrAzureLang(AsrBase):
         processing_time = (datetime.datetime.now() - start_time).total_seconds()
 
         print(
-            "\n\n\n\n\n",
-            "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-            f"*** during transcribe function, \n\t\t\tresult.reason: {result.reason}, \n\t\t\tresult.text: {result.text}",
-            transcript_obj.transcription_ground_truth,
+            "\n\n",
+            "+++++ AsrAzureLang +++++",
+            f"*** during transcribe function, \n\t\t\tresult.reason: {result.reason}, \n\tresult.text:\n\t\t {result.text}",
+            f"\n\ttranscript_obj.transcription_ground_truth:\n\t\t{transcript_obj.transcription_ground_truth}",
         )
 
         if result.reason == speechsdk.ResultReason.RecognizedSpeech:

@@ -9,20 +9,12 @@ from jiwer import wer
 
 from asr.asr_base import AsrBase, Transcription, TranscriptionResult
 
-# Recupera la chiave API dalla variabile d'ambiente
 api_key = os.getenv("GOOGLE_API_KEY", "")
 
-assert (
-    api_key[-2:] == "G0"
-), "La chiave API Gemini non è stata trovata. Assicurati di impostarla come variabile d'ambiente."
+assert api_key[-2:] == "G0", "The Gemini API key is missing. Set it as env variable."
 
 if not api_key:
-    raise ValueError(
-        "La chiave API Gemini non è stata trovata. Assicurati di impostarla come variabile d'ambiente."
-    )
-
-# # Configura l'autenticazione
-# genai.configure(api_key=api_key)
+    raise ValueError("The Gemini API key is missing. Set it as env variable.")
 
 
 class AsrGemini(AsrBase):
@@ -58,12 +50,11 @@ class AsrGemini(AsrBase):
         processing_time = (datetime.datetime.now() - start_time).total_seconds()
 
         print("Gemini transcript: response.text: ", response.text)
-        print("Gemini transcript: response:", response)
+        # print("Gemini transcript: response:", response)
 
         """
         candidates=[Candidate(content=Content(parts=[Part(video_metadata=None, thought=None, code_execution_result=None, executable_code=None, file_data=None, function_call=None, function_response=None, inline_data=None, text='Un fuerte ronquido anunció el aplanamiento de aquel elevado espíritu, conturbado por el vino de la conjuración.')], role='model'), citation_metadata=None, finish_message=None, token_count=None, finish_reason=<FinishReason.STOP: 'STOP'>, avg_logprobs=-0.004714108407497406, grounding_metadata=None, index=None, logprobs_result=None, safety_ratings=None)] create_time=None response_id=None model_version='gemini-2.0-flash' prompt_feedback=None usage_metadata=GenerateContentResponseUsageMetadata(cache_tokens_details=None, cached_content_token_count=None, candidates_token_count=25, candidates_tokens_details=[ModalityTokenCount(modality=<MediaModality.TEXT: 'TEXT'>, token_count=25)], prompt_token_count=157, prompt_tokens_details=[ModalityTokenCount(modality=<MediaModality.AUDIO: 'AUDIO'>, token_count=150), ModalityTokenCount(modality=<MediaModality.TEXT: 'TEXT'>, token_count=7)], thoughts_token_count=None, tool_use_prompt_token_count=None, tool_use_prompt_tokens_details=None, total_token_count=182) automatic_function_calling_history=[] parsed=None
-Traceback (most recent call last):
-"""
+        """
 
         if response.candidates:
             print("Gemini transcript: response.candidates: ", response.candidates)

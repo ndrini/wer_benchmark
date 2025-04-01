@@ -2,10 +2,9 @@
 #  WARNING: ALL the ASR service MUST start with "Asr" string
 
 import inspect
-import os
 
 from .asr_azure import AsrAzure
-from .asr_azure_lang import AsrAzureLang
+from .asr_azurelang import AsrAzureLang
 from .asr_gemini import AsrGemini
 
 
@@ -13,7 +12,7 @@ def get_asr_engine(engine_name: str, **kwargs):
     """Devuelve una instancia del ASR seleccionado."""
     if engine_name == "azure":
         return AsrAzure()
-    elif engine_name == "azure_lang":
+    elif engine_name == "azurelang":
         return AsrAzureLang()
     elif engine_name == "gemini":
         return AsrGemini()
@@ -28,5 +27,6 @@ def get_available_asr_engines() -> list[str]:
     engines = []
     for name, obj in globals().items():
         if inspect.isclass(obj) and name.startswith("Asr"):
-            engines.append(name.lower().replace("asr", ""))
+            engine_name: str = name.lower().replace("asr", "")
+            engines.append(engine_name)
     return engines
