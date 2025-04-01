@@ -33,6 +33,8 @@
         "docstore",
         "dotenv",
         "fastapi",
+        "gemini",
+        "genai",
         "hashicorp",
         "HNSW",
         "Itaca",

@@ -5,12 +5,18 @@ import inspect
 import os
 
 from .asr_azure import AsrAzure
+from .asr_azure_lang import AsrAzureLang
+from .asr_gemini import AsrGemini
 
 
 def get_asr_engine(engine_name: str, **kwargs):
     """Devuelve una instancia del ASR seleccionado."""
     if engine_name == "azure":
         return AsrAzure()
+    elif engine_name == "azure_lang":
+        return AsrAzureLang()
+    elif engine_name == "gemini":
+        return AsrGemini()
     # elif engine_name == "whisper":
     #     return ASRWhisper(model_name=kwargs.get("model_name", "base"))
     else:

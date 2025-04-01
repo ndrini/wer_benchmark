@@ -6,7 +6,7 @@ from asr.asr_factory import get_asr_engine, get_available_asr_engines
 from . import asr_utils
 
 # list possible asr engines
-engines = ["whispers", "gemini", "speech"]
+# engines = ["whispers", "gemini", "speech"]
 
 
 # Stampiamo i motori disponibili
@@ -56,6 +56,8 @@ def get_wer(item_number: int = 2):
 
     for transcript_obj in dataset:
         add_transcription("azure", transcript_obj)
+        add_transcription("gemini", transcript_obj)
+        add_transcription("azure_lang", transcript_obj)
 
     #     # add further services here
     #     print(transcript_obj)

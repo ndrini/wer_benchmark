@@ -28,8 +28,14 @@ def extract_random_short(files_number: int) -> pd.DataFrame:
     #     os.path.join(root_path, "data", "ds_short_transcript.txt"), sep="\\|"
     # )
 
-    df_transcript = pd.read_csv(
-        os.path.join(root_path, "data", "ds_short_transcript.csv")
+    df_transcript: pd.DataFrame = pd.read_csv(
+        os.path.join(root_path, "data", "ds_short_transcript.csv"),
+        dtype={
+            "file": str,
+            "transcript_itn": str,
+            "transcript": str,
+            "duration": float,
+        },
     )
 
     # create a new dataframe with only the file name and transcript columns
@@ -46,6 +52,9 @@ def extract_random_short(files_number: int) -> pd.DataFrame:
         df_transcript.head(),
     )
 
+    # print(
+    #     "*******************************************", df_transcript["transcript_itn"]
+    # )
     # randomly sample from the dataframe
     df_short = df_transcript.sample(n=files_number)
 
@@ -58,6 +67,10 @@ def extract_random_short(files_number: int) -> pd.DataFrame:
         "*** during extract_random_short function, , \n\t\t\tdf_short.head():",
         df_short.head(),
     )
+
+    for sentence in df_short["transcript"]:
+        print("*******************************************", sentence)
+
     return df_short
 
 
@@ -87,23 +100,66 @@ def compute_wer(reference: str, hypothesis: str):
 
 
 def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict[str, float]:
-    # compute the mean wer for each service
-    mean_wers = {}
+    """
+    Computa il WER medio per ciascun servizio.
+    Gestisce i casi in cui trans_result.wer è None.
+    """
+    mean_wers: dict[str, list[float]] = {}
     for transcription in dataset:
-        # for each service
         for trans_result in transcription.transcriptionResults:
-            # Ensure the service key exists and is a list
-            mean_wers.setdefault(trans_result.service, []).append(trans_result.wer)
+            if trans_result.wer is not None:
+                mean_wers.setdefault(trans_result.service, []).append(trans_result.wer)
 
-    # Compute the mean WER for each service
-    for service in mean_wers:
-        print("*************** mean_wers", mean_wers[service])
-        mean_wers[service] = sum(mean_wers[service]) / len(mean_wers[service])
+    # Compute the mean WER for each service, skipping services with no valid WER values.
+    result_mean_wers: dict[str, float] = {}
+    for service, wers in mean_wers.items():
+        if wers:  # Check if the list is not empty
+            print("*************** mean_wers", wers)
+            result_mean_wers[service] = sum(wers) / len(wers)
 
-    return mean_wers
+    return result_mean_wers
 
 
-def compute_mean_processing_time_for_each_service(dataset: list[Transcription]) -> dict:
+# def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict[str, float]:
+#     # compute the mean wer for each service
+#     mean_wers = {}
+#     for transcription in dataset:
+#         # for each service
+#         for trans_result in transcription.transcriptionResults:
+#             # Ensure the service key exists and is a list
+#             mean_wers.setdefault(trans_result.service, []).append(trans_result.wer)
+
+
+#     """ prevent possible missing of wer values in the transcriptionResults list
+#         to avoid *************** mean_wers [None, 1.5, 1.1428571428571428]
+# Traceback (most recent call last):
+#   File "<frozen runpy>", line 198, in _run_module_as_main
+#   File "<frozen runpy>", line 88, in _run_code
+#   File "/home/lillo/workspace/b_ins/wer_benchmark/main.py", line 31, in <module>
+#     wer_result = compute_asr_benchmark.get_wer(item_number)
+#                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "/home/lillo/workspace/b_ins/wer_benchmark/asr/compute_asr_benchmark.py", line 72, in get_wer
+#     asr_utils.compute_mean_wer_for_each_service(dataset),
+#     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "/home/lillo/workspace/b_ins/wer_benchmark/asr/asr_utils.py", line 110, in compute_mean_wer_for_each_service
+#     mean_wers[service] = sum(mean_wers[service]) / len(mean_wers[service])
+#                          ^^^^^^^^^^^^^^^^^^^^^^^
+# TypeError: unsupported operand type(s) for +: 'int' and 'NoneType'
+
+#     """
+
+#     # Compute the mean WER for each service
+#     for service in mean_wers:
+#         print("*************** mean_wers", mean_wers[service])
+#         mean_wers[service] = sum(mean_wers[service]) / len(mean_wers[service])
+
+
+#     return mean_wers
+
+
+def compute_mean_processing_time_for_each_service(
+    dataset: list[Transcription],
+) -> dict[str, float]:
     # compute the mean wer for each service
     mean_process_time = {}
     for transcription in dataset:
@@ -130,7 +186,9 @@ def compute_mean_processing_time_for_each_service(dataset: list[Transcription]) 
 #     mean_wers = compute_mean_wer_for_each_service(dataset)
 
 
-def plot_and_store_results_for_each_service(mean_wers: dict, mean_process_time: dict):
+def plot_and_store_results_for_each_service(
+    mean_wers: dict[str, float], mean_process_time: dict[str, float]
+):
     """normalize and plot the mean WER and mean processing time for each service"""
     # normalize the mean WER and mean processing time
     # plot the mean WER and mean processing time for each service
@@ -180,7 +238,7 @@ def plot_and_store_results_for_each_service(mean_wers: dict, mean_process_time: 
     plt.savefig(filepath)
 
 
-def plot_mean_wer_for_each_service(mean_wers: dict):
+def plot_mean_wer_for_each_service(mean_wers: dict[str, float]):
     """plot the mean WER for each service"""
 
     # Create the plot
