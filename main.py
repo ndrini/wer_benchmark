@@ -21,5 +21,12 @@ def main():
 if __name__ == "__main__":
     #  main()
 
-    wer_result = compute_asr_benchmark.get_wer(item_number=2)
+    # read input from the command line
+    args = os.sys.argv[1:]
+    if len(args) > 0:
+        item_number = int(args[0])
+    else:
+        item_number = 2
+
+    wer_result = compute_asr_benchmark.get_wer(item_number)
     print(wer_result)
