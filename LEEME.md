@@ -8,8 +8,15 @@ Este documento proporciona instrucciones para la instalación y configuración d
 Ejecuta con venv activado: 
 
 ```bash
-python -m main
+python -m main <sample_number>
 ```
+
+El comando de ejecución tiene que seguir el patron:
+`python -m main <info|N> [all|engine1,engine2,...]`
+con:
+
+- info para conocer los engines disponibles o bien N como integer del numero intero de exemplos a pillar
+- all o bien el listado de engine srt a utilizar
 
 Lee en el termina los resultados, ve el gráfico en la carpeta `results` (ordenados por fecha).
 
