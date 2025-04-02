@@ -49,6 +49,7 @@ class AsrGemini(AsrBase):
 
         processing_time = (datetime.datetime.now() - start_time).total_seconds()
 
+        print("\n\n", "+++++ AsrGemini +++++")
         print("Gemini transcript: response.text: ", response.text)
         # print("Gemini transcript: response:", response)
 
@@ -57,7 +58,7 @@ class AsrGemini(AsrBase):
         """
 
         if response.candidates:
-            print("Gemini transcript: response.candidates: ", response.candidates)
+            # print("Gemini transcript: response.candidates: ", response.candidates)
             # transcription = response.candidates[0].contents[0].text
 
             google_transcription = response.text if response.text else ""
