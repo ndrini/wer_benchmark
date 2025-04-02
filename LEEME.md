@@ -69,7 +69,11 @@ Antes de comenzar, asegúrate de tener instalados los siguientes elementos en tu
 
 
 
-## Model 
+## Los Models (Engines en este proyecto)
+
+Lo modelos de ML que producen la trascripciones se llaman engines in este proyectos. 
+
+Aquí una reseña.
 
 
 ### ??? 
@@ -81,12 +85,35 @@ https://ai.azure.com/explore/models/aiservices/Azure-AI-Speech/version/1/registr
 
 
 
-### AZURE_AI_SPEECH_SERVICE
+### Azure cognitive service
+
+AKA AZURE_AI_SPEECH_SERVICE
 
 
 AZURE_AI_SPEECH_SERVICE_URL = https://westeurope.api.cognitive.microsoft.com/
 ; AZURE_AI_SPEECH_SERVICE_KEY=9O
 AZURE_AI_SPEECH_SERVICE_REGION = westeurope
+
+
+
+
+### Azure-AI-Speech
+
+En la pagina [aiservices/Azure-AI-Speech](https://ai.azure.com/explore/models/aiservices/Azure-AI-Speech/version/1/registry/azureml-cogsvc/tryout?tid=bf618c51-6c72-4dc7-b52c-2f41381c1899#realtime) se encuentra los 3 modelos de nuestro interés:
+
+- Real-time transcription
+ - Live transcription capabilities on your own audio without writing any code.
+- Fast transcription
+ - Leveraging advanced speech recognition technology for rapid analysis and recognition.
+- Batch transcription
+ - Transcribe a large amount of audio in storage and get results asynchronously.
+
+Para credenciales y ejemplos seguir el link "Go to speech playground": allí ver "view code" para accedere a credenciales y ejemplos.
+
+
+### Gemini Google
+
+
 
 
 

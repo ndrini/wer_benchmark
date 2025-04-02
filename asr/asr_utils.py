@@ -224,6 +224,71 @@ def plot_mean_wer_for_each_service(mean_wers: dict[str, float]):
     print(f"Figure saved to {filepath}")
 
 
+def store_results_in_csv(
+    wer_result: tuple[dict[str, float], dict[str, float]], item_number: int
+):
+    """store the results in a file"""
+
+    # read the CSV file with previous results and if not present, create it
+    filepath = os.path.join(root_path, "results", "wer_all_time_results.csv")
+    if os.path.exists(filepath):
+        df_all_time_results = pd.read_csv(filepath)
+
+        # update columns if necessary
+        for col in wer_result[0].keys():
+            if col not in df_all_time_results.columns:
+                df_all_time_results[col] = None
+    else:
+        # Create a DataFrame from the results (first time or after cancellation)
+        df_all_time_results = pd.DataFrame(
+            columns=["item_number"]
+            # "item_number": wer_result[0].keys(),
+            # "WER": wer_result[0].values(),
+            # "Processing Time": wer_result[1].values(),
+        )
+        # Add the new columns
+        for col in wer_result[0].keys():
+            df_all_time_results["WER_" + col] = None
+            df_all_time_results["time_" + col] = None
+        # set types, set all columns starting with "WER_" to float
+        for col in df_all_time_results.columns:
+            if col.startswith("WER_") or col.startswith("time_"):
+                df_all_time_results[col] = df_all_time_results[col].astype(float)
+        df_all_time_results["item_number"] = df_all_time_results["item_number"].astype(
+            int
+        )
+        print("****new df ***** ", df_all_time_results.head())
+
+    # Add values to the DataFrame
+    # add a new line in the DataFrame with the results
+    # Create a new row to append
+    new_row = {"item": item_number}
+    for col, value in wer_result[0].items():
+        new_row["WER_" + str(col)] = value
+    for col, value in wer_result[1].items():
+        new_row["time_" + str(col)] = value
+
+    # Append the new row to the DataFrame
+    df_all_time_results = pd.concat(
+        [df_all_time_results, pd.DataFrame([new_row])], ignore_index=True
+    )
+
+    print("**** populated df_all_time_results ***** ", df_all_time_results.head())
+
+    # Save the updated DataFrame to CSV
+    df_all_time_results.to_csv(filepath, index=False)
+
+    # for col in wer_result[0].keys():
+    #     df_all_time_results.at[item_number, "WER_" + col] = wer_result[0][col]
+    # for col in wer_result[1].keys():
+    #     df_all_time_results.at[item_number, "time_" + col] = wer_result[1][col]
+
+    # # Save to CSV
+    # filename = f"wer_results_{item_number}_{datetime.today()}.csv"
+    # filepath = os.path.join(root_path, "results", filename)
+    # df_all_time_results.to_csv(filepath, index=False)
+
+
 if __name__ == "__main__":
 
     plot_and_store_results_for_each_service(

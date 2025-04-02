@@ -71,4 +71,6 @@ def get_wer(
 
     asr_utils.plot_and_store_results_for_each_service(*wer_result)
 
+    asr_utils.store_results_in_csv(wer_result, item_number)
+
     return wer_result

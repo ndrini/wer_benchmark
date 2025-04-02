@@ -3,6 +3,10 @@
 
 import inspect
 
+# from .asr_azaispeechbatchtr import AzAISpeechBatchTr
+# from .asr_azaispeechrealtimetr import AsrAzAISpeechRealTimeTr
+from .asr_azaispeechfasttr import AsrAzAiSpeechFastTr
+from .asr_azaispeechfasttrlang import AsrAzAiSpeechFastTrLang
 from .asr_azure import AsrAzure
 from .asr_azurelang import AsrAzureLang
 from .asr_gemini import AsrGemini
@@ -16,6 +20,12 @@ def get_asr_engine(engine_name: str, **kwargs):
         return AsrAzureLang()
     elif engine_name == "gemini":
         return AsrGemini()
+    # elif engine_name == "azaispeechbatchtr":
+    #     return AsrAzAISpeechBatchTr()
+    elif engine_name == "azaispeechfasttr":
+        return AsrAzAiSpeechFastTr()
+    elif engine_name == "azaispeechfasttrlang":
+        return AsrAzAiSpeechFastTrLang()
     # elif engine_name == "whisper":
     #     return ASRWhisper(model_name=kwargs.get("model_name", "base"))
     else:
