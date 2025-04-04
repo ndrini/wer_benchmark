@@ -54,7 +54,8 @@ class AsrAzAiSpeechFastTr(AsrBase):
                     "definition": (
                         None,
                         # ["de-DE", "en-GB", "en-IN", "en-US", "es-ES", "es-MX", "fr-FR", "hi-IN", "it-IT", "ja-JP", "ko-KR", "pt-BR", "zh-CN"]
-                        '{ "locales": ["es-ES","en-US","ja-JP"], "profanityFilterMode": "Masked", "channels": [0, 1] }',
+                        # '{ "locales": ["es-ES","en-US","ja-JP"], "profanityFilterMode": "Masked", "channels": [0, 1] }',
+                        '{ "locales": ["de-DE", "en-GB", "en-IN", "en-US", "es-ES", "es-MX", "fr-FR", "hi-IN", "it-IT", "ja-JP", "ko-KR", "pt-BR", "zh-CN"], "profanityFilterMode": "Masked", "channels": [0, 1] }',
                     ),
                 }
 
