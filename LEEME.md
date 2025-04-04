@@ -105,6 +105,7 @@ En la pagina [aiservices/Azure-AI-Speech](https://ai.azure.com/explore/models/ai
  - Live transcription capabilities on your own audio without writing any code.
 - Fast transcription
  - Leveraging advanced speech recognition technology for rapid analysis and recognition.
+ - [official docs](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/fast-transcription-create?tabs=locale-specified) 
 - Batch transcription
  - Transcribe a large amount of audio in storage and get results asynchronously.
 

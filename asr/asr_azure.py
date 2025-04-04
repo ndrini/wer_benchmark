@@ -32,7 +32,7 @@ class AsrAzure(AsrBase):
         self.speech_config = speechsdk.SpeechConfig(
             subscription=subscription_key, region=region
         )
-        self.audio_config = None  # Se define en cada transcripción
+        self.audio_config = None  # defined in each transcription
 
     def transcribe(self, transcript_obj: Transcription) -> TranscriptionResult:
         """Transcribe a audio file. Returns the object TranscriptionResult."""
@@ -40,7 +40,7 @@ class AsrAzure(AsrBase):
         start_time = datetime.datetime.now()
 
         self.audio_config = speechsdk.audio.AudioConfig(
-            filename=transcript_obj.audio_wav_path
+            filename=str(transcript_obj.audio_wav_path)
         )
         recognizer = speechsdk.SpeechRecognizer(
             speech_config=self.speech_config, audio_config=self.audio_config
