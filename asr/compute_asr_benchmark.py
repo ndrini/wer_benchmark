@@ -59,17 +59,14 @@ def get_wer(
     for engine in engines:
         for transcript_obj in dataset:
             add_transcription(engine, transcript_obj)
-            # aka
-            # add_transcription("azure", transcript_obj)
-            # add_transcription("gemini", transcript_obj)
-            # add_transcription("azure_lang", transcript_obj)
+            # e.g. add_transcription("gemini", transcript_obj)
 
     wer_result = (
         asr_utils.compute_mean_wer_for_each_service(dataset),
         asr_utils.compute_mean_processing_time_for_each_service(dataset),
     )
 
-    asr_utils.plot_and_store_results_for_each_service(*wer_result)
+    asr_utils.plot_results_for_each_service(*wer_result)
 
     asr_utils.store_results_in_csv(wer_result, item_number)
 

@@ -57,6 +57,13 @@ class AsrGemini(AsrBase):
         candidates=[Candidate(content=Content(parts=[Part(video_metadata=None, thought=None, code_execution_result=None, executable_code=None, file_data=None, function_call=None, function_response=None, inline_data=None, text='Un fuerte ronquido anunció el aplanamiento de aquel elevado espíritu, conturbado por el vino de la conjuración.')], role='model'), citation_metadata=None, finish_message=None, token_count=None, finish_reason=<FinishReason.STOP: 'STOP'>, avg_logprobs=-0.004714108407497406, grounding_metadata=None, index=None, logprobs_result=None, safety_ratings=None)] create_time=None response_id=None model_version='gemini-2.0-flash' prompt_feedback=None usage_metadata=GenerateContentResponseUsageMetadata(cache_tokens_details=None, cached_content_token_count=None, candidates_token_count=25, candidates_tokens_details=[ModalityTokenCount(modality=<MediaModality.TEXT: 'TEXT'>, token_count=25)], prompt_token_count=157, prompt_tokens_details=[ModalityTokenCount(modality=<MediaModality.AUDIO: 'AUDIO'>, token_count=150), ModalityTokenCount(modality=<MediaModality.TEXT: 'TEXT'>, token_count=7)], thoughts_token_count=None, tool_use_prompt_token_count=None, tool_use_prompt_tokens_details=None, total_token_count=182) automatic_function_calling_history=[] parsed=None
         """
 
+        # avg_logp = response.candidates[0].get(contents[0], []).get("avg_logprobs", "")
+
+        print(
+            "_______________________________avg_logprobs ______________________________:",
+            response.candidates[0].avg_logprobs,
+        )
+
         if response.candidates:
             # print("Gemini transcript: response.candidates: ", response.candidates)
             # transcription = response.candidates[0].contents[0].text
@@ -64,9 +71,13 @@ class AsrGemini(AsrBase):
             google_transcription = response.text if response.text else ""
 
             return TranscriptionResult(
-                service="google",
+                service="gemini",
                 transcription=google_transcription,
-                confidence=None,  # Google non fornisce un punteggio di confidenza
+                confidence=(
+                    float(response.candidates[0].avg_logprobs)
+                    if response.candidates[0]
+                    else -9999.0
+                ),  # Google provide the  avg_logprobs: always =< 0, and negative: the closest to 0, the better
                 processing_time=processing_time,
                 error=False,
                 wer=wer(

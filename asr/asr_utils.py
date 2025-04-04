@@ -83,7 +83,8 @@ def create_transcription_instance_from_short(
     idx: Hashable,
     row: pd.Series,
 ) -> Transcription:
-    audio_file_path = os.path.join(root_path, "data", "ds_short", row["file"])
+    # audio_file_path = os.path.join(root_path, "data", "ds_short", row["file"])
+    audio_file_path = root_path / "data" / "ds_short" / row["file"]
 
     return Transcription(
         # audio_wav_path=open(audio_file_path, "rb").read(),
@@ -115,7 +116,7 @@ def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict[str,
     for service, wers in mean_wers.items():
         if wers:  # Check if the list is not empty
             print("*************** mean_wers", wers)
-            result_mean_wers[service] = sum(wers) / len(wers)
+            result_mean_wers[service] = round(sum(wers) / len(wers), 3)
 
     return result_mean_wers
 
@@ -137,14 +138,14 @@ def compute_mean_processing_time_for_each_service(
     for service in mean_process_time:
 
         print("*************** mean_process_time", mean_process_time[service])
-        mean_process_time[service] = sum(mean_process_time[service]) / len(
-            mean_process_time[service]
+        mean_process_time[service] = round(
+            sum(mean_process_time[service]) / len(mean_process_time[service]), 3
         )
 
     return mean_process_time
 
 
-def plot_and_store_results_for_each_service(
+def plot_results_for_each_service(
     mean_wers: dict[str, float], mean_process_time: dict[str, float]
 ):
     """normalize and plot the mean WER and mean processing time for each service"""
@@ -155,7 +156,12 @@ def plot_and_store_results_for_each_service(
     normalized_process_time = {
         k: v / max_process_time for k, v in mean_process_time.items()
     }
-    normalized_wer = {k: v / max_wer for k, v in mean_wers.items()}
+
+    if max_wer == 0:
+        # TODO review
+        normalized_wer = {k: v for k, v in mean_wers.items()}
+    else:
+        normalized_wer = {k: v / max_wer for k, v in mean_wers.items()}
     # Create the plot
     data = {
         "WER": normalized_wer,
@@ -227,10 +233,12 @@ def plot_mean_wer_for_each_service(mean_wers: dict[str, float]):
 def store_results_in_csv(
     wer_result: tuple[dict[str, float], dict[str, float]], item_number: int
 ):
-    """store the results in a file"""
+    """store the results in the wer_all_time_results.csv file, for the engines used in that specific run and saving the number of items (audio tracks) utilized."""
 
     # read the CSV file with previous results and if not present, create it
-    filepath = os.path.join(root_path, "results", "wer_all_time_results.csv")
+    # filepath = os.path.join(root_path, "results", "wer_all_time_results.csv")
+    filepath = root_path / "results" / "wer_all_time_results.csv"
+
     if os.path.exists(filepath):
         df_all_time_results = pd.read_csv(filepath)
 
@@ -262,7 +270,7 @@ def store_results_in_csv(
     # Add values to the DataFrame
     # add a new line in the DataFrame with the results
     # Create a new row to append
-    new_row = {"item": item_number}
+    new_row = {"item_number": item_number}
     for col, value in wer_result[0].items():
         new_row["WER_" + str(col)] = value
     for col, value in wer_result[1].items():
@@ -278,20 +286,10 @@ def store_results_in_csv(
     # Save the updated DataFrame to CSV
     df_all_time_results.to_csv(filepath, index=False)
 
-    # for col in wer_result[0].keys():
-    #     df_all_time_results.at[item_number, "WER_" + col] = wer_result[0][col]
-    # for col in wer_result[1].keys():
-    #     df_all_time_results.at[item_number, "time_" + col] = wer_result[1][col]
-
-    # # Save to CSV
-    # filename = f"wer_results_{item_number}_{datetime.today()}.csv"
-    # filepath = os.path.join(root_path, "results", filename)
-    # df_all_time_results.to_csv(filepath, index=False)
-
 
 if __name__ == "__main__":
 
-    plot_and_store_results_for_each_service(
+    plot_results_for_each_service(
         {"whispers": 0.1, "gemini": 0.2, "speech": 0.15},
         {"whispers": 580, "gemini": 874, "speech": 511},
     )

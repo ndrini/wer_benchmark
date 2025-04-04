@@ -1,16 +1,6 @@
-import os
-import pathlib
 import sys
 
-import azure.cognitiveservices.speech as speechsdk
-import ffmpeg
-
 from asr import compute_asr_benchmark
-
-# # get abs root path
-# root_path = pathlib.Path(__file__).parent.resolve()
-
-# print(root_path)
 
 
 def display_info():
@@ -46,12 +36,8 @@ def manage_starting_info(args: list[str] = []):
             wer_result = compute_asr_benchmark.get_wer(item_number, engines)
         else:
 
-            engines = [engine.strip(",") for engine in args[1:]]  # Rimuove spazi extra
-            print(f"Readddddddddddddddddddddddddddddddd engines: {engines}")
-
-            # engines = args[1].split(",")
-            # # engines = args[1].split(",").strip()
-            # print(f"Readddddddddddddddddddddddddddddddd engines: {engines}")
+            engines = [engine.strip(",") for engine in args[1:]]
+            print(f"List of available engines: {engines}")
 
             # check all engines are supported
             for engine in engines:

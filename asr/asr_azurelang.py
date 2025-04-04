@@ -40,7 +40,7 @@ class AsrAzureLang(AsrBase):
         )
 
         audio_config = speechsdk.audio.AudioConfig(
-            filename=transcript_obj.audio_wav_path
+            filename=str(transcript_obj.audio_wav_path)
         )
         recognizer = speechsdk.SpeechRecognizer(
             speech_config=speech_config, audio_config=audio_config
