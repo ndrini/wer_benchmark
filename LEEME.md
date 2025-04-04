@@ -114,7 +114,18 @@ Para credenciales y ejemplos seguir el link "Go to speech playground": allí ver
 
 ### Gemini Google
 
+Hemos seguido esta guía: https://ai.google.dev/gemini-api/docs/audio?lang=python
 
+Cuidado con el uso: 
+google.genai.errors.ClientError: 429 RESOURCE_EXHAUSTED. 
+
+```bash
+You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.'
+```
+
+### Openai
+
+Hemos seguido esta guía: https://platform.openai.com/docs/guides/speech-to-text
 
 
 
