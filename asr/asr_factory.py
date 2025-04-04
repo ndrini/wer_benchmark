@@ -10,6 +10,7 @@ from .asr_azaispeechfasttrlang import AsrAzAiSpeechFastTrLang
 from .asr_azure import AsrAzure
 from .asr_azurelang import AsrAzureLang
 from .asr_gemini import AsrGemini
+from .asr_openai import AsrOpenaiGpt4oTr
 
 
 def get_asr_engine(engine_name: str, **kwargs):
@@ -26,6 +27,8 @@ def get_asr_engine(engine_name: str, **kwargs):
         return AsrAzAiSpeechFastTr()
     elif engine_name == "azaispeechfasttrlang":
         return AsrAzAiSpeechFastTrLang()
+    elif engine_name == "openaigpt4otr":
+        return AsrOpenaiGpt4oTr()
     # elif engine_name == "whisper":
     #     return ASRWhisper(model_name=kwargs.get("model_name", "base"))
     else:
