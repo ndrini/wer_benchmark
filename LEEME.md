@@ -87,14 +87,22 @@ https://ai.azure.com/explore/models/aiservices/Azure-AI-Speech/version/1/registr
 
 ### Azure cognitive service
 
-AKA AZURE_AI_SPEECH_SERVICE
+Con el nombre de "azure" estamos evaluando las prestaciones de este modelo, [documentado aquí]( 
+https://learn.microsoft.com/en-us/azure/ai-services/speech-service/get-started-speech-to-text?source=recommendations&tabs=linux%2Cterminal&pivots=programming-language-python).
 
-
+Los diferencia el hecho que en azure_lag le digo que le audio es en catellano (    
+   
+```python
 AZURE_AI_SPEECH_SERVICE_URL = https://westeurope.api.cognitive.microsoft.com/
-; AZURE_AI_SPEECH_SERVICE_KEY=9O
+AZURE_AI_SPEECH_SERVICE_KEY=9O...
 AZURE_AI_SPEECH_SERVICE_REGION = westeurope
+speech_config.speech_recognition_language = ("es-ES")
+```            
+ y en el otro (azure) no.
 
 
+La herramienta está creada aquí 
+https://portal.azure.com/#@businessinsights.es/resource/subscriptions/5b955726-2f80-4c93-8360-0b606660e859/resourceGroups/ai-insights/providers/Microsoft.CognitiveServices/accounts/vocalai-speech-sevice/overview
 
 
 ### Azure-AI-Speech
@@ -109,7 +117,7 @@ En la pagina [aiservices/Azure-AI-Speech](https://ai.azure.com/explore/models/ai
 - Batch transcription
  - Transcribe a large amount of audio in storage and get results asynchronously.
 
-Para credenciales y ejemplos seguir el link "Go to speech playground": allí ver "view code" para accedere a credenciales y ejemplos.
+Para credenciales y ejemplos seguir el link "Go to speech playground": allí ver "view code" para acceder a credenciales y ejemplos.
 
 
 ### Gemini Google
