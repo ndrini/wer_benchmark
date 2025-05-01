@@ -1,28 +1,28 @@
 import os
-import random
 from datetime import datetime
+from pathlib import Path
 
 import matplotlib.pyplot as plt
-import pandas
+import pandas as pd
 
 # from audio_tools import recognize_speech_from_wav
 from datasets import load_dataset
 from jiwer import wer
 
-from utils import custom_objects
-
-ds_long = load_dataset("Nexdata/Spanish_Conversational_Speech_Data_by_Telephone")
-
-# from main import root_path
-
 from . import root_path
 from .asr_base import Transcription, TranscriptionResult
 
+# from utils import custom_objects
 
-def extract_random_short(files_number) -> pandas.DataFrame:
+# ds_long = load_dataset("Nexdata/Spanish_Conversational_Speech_Data_by_Telephone")
+
+# from main import root_path
+
+
+def extract_random_short(files_number) -> pd.DataFrame:
 
     # import in a dataframe the data/ds_short_transcript.txt txt file, fields separated by | pipe
-    transcript = pandas.read_csv(
+    transcript = pd.read_csv(
         os.path.join(root_path, "data", "ds_short_transcript.txt"), sep="\\|"
     )
 
@@ -37,11 +37,11 @@ def extract_random_short(files_number) -> pandas.DataFrame:
     return df_short
 
 
-def extract_random_long(files_number) -> pandas.DataFrame:
+def extract_random_long(files_number) -> pd.DataFrame:
     pass
 
 
-def create_transcription_instance_from_short(idx, row: pandas.Series):
+def create_transcription_instance_from_short(idx, row: pd.Series):
     audio_file_path = os.path.join(root_path, "data", "ds_short", row["file"])
 
     return Transcription(
@@ -60,17 +60,6 @@ def compute_wer(reference, hypothesis):
 def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict:
     # compute the mean wer for each service
     mean_wers = {}
-    # for transcription in dataset:
-    #     # for each service
-    #     for trans_result in transcription.transcriptionResults:
-    #         if trans_result.service not in mean_wer:
-    #             mean_wer[trans_result.service] = []
-    #         mean_wer[trans_result.service].append(trans_result.wer)
-    #         mean_wer[trans_result.service] = sum(mean_wer[trans_result.service]) / len(
-    #             mean_wer[trans_result.service]
-    #         )
-    # return mean_wer
-
     for transcription in dataset:
         # for each service
         for trans_result in transcription.transcriptionResults:
@@ -84,23 +73,83 @@ def compute_mean_wer_for_each_service(dataset: list[Transcription]) -> dict:
     return mean_wers
 
 
+def compute_mean_processing_time_for_each_service(dataset: list[Transcription]) -> dict:
+    # compute the mean wer for each service
+    mean_process_time = {}
+    for transcription in dataset:
+        # for each service
+        for trans_result in transcription.transcriptionResults:
+            # Ensure the service key exists and is a list
+            mean_process_time.setdefault(trans_result.service, []).append(
+                trans_result.wer
+            )
+
+    # Compute the mean WER for each service
+    for service in mean_process_time:
+        mean_process_time[service] = sum(mean_process_time[service]) / len(
+            mean_process_time[service]
+        )
+
+    return mean_process_time
+
+
 # def display_mean_wer_for_each_service(dataset: list[Transcription]):
 #     """plot the mean WER for each service"""
 #     mean_wers = compute_mean_wer_for_each_service(dataset)
 
 
-def display_mean_wer_for_each_service(mean_wers: dict):
+def plot_and_store_results_for_each_service(mean_wers: dict, mean_process_time: dict):
+    """normalize and plot the mean WER and mean processing time for each service"""
+    # normalize the mean WER and mean processing time
+    # plot the mean WER and mean processing time for each service
+    # Create the plot
+    max_process_time = max(mean_process_time.values())
+    max_wer = max(mean_wers.values())
+    # Normalize the values
+    normalized_process_time = {
+        k: v / max_process_time for k, v in mean_process_time.items()
+    }
+    normalized_wer = {k: v / max_wer for k, v in mean_wers.items()}
+    # Create the plot
+    data = {
+        "WER": normalized_wer,
+        "Processing Time": normalized_process_time,
+    }
+
+    # Creiamo un DataFrame
+    df = pd.DataFrame(data)
+
+    # Creiamo il grafico a barre
+    df.plot(kind="bar", figsize=(10, 6))
+
+    # Aggiungiamo etichette
+    plt.xlabel("Categorie")
+    plt.ylabel("Valori Normalizzati")
+    plt.title("Confronto tra WER e Tempo di Elaborazione")
+    plt.legend(title="Metrica")
+
+    # Add some styling
+    plt.title("Mean Word Error Rate (WER) and Mean Processing Time by Service")
+    plt.xlabel("Service")
+    plt.ylabel("Normalized Mean (0-1)")
+    plt.xticks(rotation=45)  # Rotate labels for better readability
+    plt.legend()  # Show legend
+    plt.tight_layout()  # Adjust layout to make room for rotated labels
+
+    results_dir = Path(root_path) / "results"
+
+    results_dir.mkdir(parents=True, exist_ok=True)
+
+    # Creazione di un percorso per un file
+    filename = f"mean_services_{datetime.today()}.png"
+    filepath = results_dir / filename
+
+    # Salva il grafico come immagine
+    plt.savefig(filepath)
+
+
+def plot_mean_wer_for_each_service(mean_wers: dict):
     """plot the mean WER for each service"""
-
-    # plt.bar(mean_wers.keys(), mean_wers.values())
-
-    # # display the image
-    # plt.show()
-
-    # # store the plot into output folder with the date of the creation
-    # plt.savefig(
-    #     f"{root_path}/results/mean_wer_{datetime.datetime.now().strftime('%Y-%m-%d')}.png"
-    # )
 
     # Create the plot
     plt.figure(figsize=(10, 6))  # Set an appropriate figure size
@@ -172,6 +221,9 @@ def display_mean_wer_for_each_service(mean_wers: dict):
 
 if __name__ == "__main__":
     # extract_random(2)
-    display_mean_wer_for_each_service(
-        {"Service1": 0.1, "Service2": 0.2, "Service3": 0.15}
+    # plot_mean_wer_for_each_service({"whispers": 0.1, "gemini": 0.2, "speech": 0.15})
+
+    plot_results_for_each_service(
+        {"whispers": 0.1, "gemini": 0.2, "speech": 0.15},
+        {"whispers": 580, "gemini": 874, "speech": 511},
     )

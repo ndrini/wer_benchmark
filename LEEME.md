@@ -1,6 +1,26 @@
-# Guía de instalación y desarollo para el proyecto **web_benchmark**
+# Guía de instalación y desarrollo para el proyecto **web_benchmark**
 
 Este documento proporciona instrucciones para la instalación y configuración del entorno de desarrollo para el proyecto **web_benchmark**. Asegúrate de seguir cada paso cuidadosamente.
+
+
+## Ejecución
+
+Ejecuta con venv activado: 
+
+```bash
+python -m main
+```
+
+Lee en el termina los resultados, ve el gráfico en la carpeta `results` (ordenados por fecha).
+
+## TODO
+
+- he definido el output esperado y las funciones que necesito para calcularlo (dibujarlo)
+- ahora: escribir la carga de datos para el dataset
+- escribir las interfaces hacia los modelos
+- 
+
+
 
 ## Requisitos Previos
 
@@ -37,7 +57,12 @@ Antes de comenzar, asegúrate de tener instalados los siguientes elementos en tu
 
 
 
-## MOdel 
+
+
+
+
+
+## Model 
 
 
 ### ??? 
@@ -86,11 +111,25 @@ Siguiendo estos pasos, deberías poder configurar correctamente el entorno de de
 
 ## desarrollo
 
-
-
-executa los ficheros con  `python -m` ' como modulos.
+Ejecuta los ficheros con  `python -m` ' como módulos.
 
 ```python
 (.venv) lillo@HP:~/workspace/b_ins/wer_benchmark$ python -m asr.compute_benchmark
 ```
 
+
+Ejecuta: 
+
+```bash
+(.venv) lillo@HP:~/workspace/b_ins/wer_benchmark$ python -m pytest
+=============================================================================== test session starts ===============================================================================
+platform linux -- Python 3.12.3, pytest-8.3.5, pluggy-1.5.0
+rootdir: /home/lillo/workspace/b_ins/wer_benchmark
+configfile: pyproject.toml
+collected 2 items                                                                                                                                                                 
+
+tests/test_mean_estraction.py ..                                                                                                                                            [100%]
+
+================================================================================ 2 passed in 0.86s ================================================================================
+(.venv) lillo@HP:~/workspace/b_ins/wer_benchmark$ python -m asr.asr_utils
+```
